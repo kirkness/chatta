@@ -1,0 +1,26 @@
+{
+  "name": "chatta",
+  "main": "chatta.min.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/kirkness/chatta",
+  "description": "A zero-dependency chat widget. Ideal for customer support with Slack.",
+  "keywords": [
+    "chat",
+    "website-widget",
+    "customer-support",
+    "slack",
+    "olark",
+    "socket.io"
+  ],
+  "authors": [
+    "Henry Kirkness"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

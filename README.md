@@ -11,6 +11,18 @@ I wanted a simple chat widget to allow me to build into my own system and integr
 
 ![Website Chat Widget (Chatta)](https://github.com/kirkness/chatta/blob/master/example.gif)
 
+## Install
+
+Either
+
+```
+$ bower install chatta
+```
+Or
+```
+$ git clone https://github.com/kirkness/chatta.git
+```
+
 
 ## Simple Example (as seen in the gif above)
 
