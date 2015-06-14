@@ -23,6 +23,16 @@ Or
 $ git clone https://github.com/kirkness/chatta.git
 ```
 
+#### The most basic implementation.
+
+'''js
+chatta.init(function(chat) {
+  chat.on('formSubmission', function(data) {
+    console.log(data);
+  });
+});
+```
+
 
 ## Simple Example (as seen in the gif above)
 
