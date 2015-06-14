@@ -5,6 +5,8 @@ In short, its similar to the widget that olark and alike provide, just without a
 
 I wanted a simple chat widget to allow me to build into my own system and integrate with Slack, and this is the result. It has zero dependencies, no extra css files; just a single file and api, written in pure JavaScript.
 
+*Note:* This is still a work in progress - hardly tested and only in Chrome, so feel free to contibute!
+
 ## The Widget
 
 ![Website Chat Widget (Chatta)](https://github.com/kirkness/chatta/blob/master/example.gif)
