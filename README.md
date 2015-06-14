@@ -10,7 +10,7 @@ I wanted a simple chat widget to allow me to build into my own system and integr
 ![Website Chat Widget (Chatta)](https://github.com/kirkness/chatta/blob/master/example.gif)
 
 
-## Simple Example
+## Simple Example (as seen in the gif above)
 
 ``` js
 // Start by initialising the widget
@@ -61,8 +61,26 @@ chatta().init(function(chat) {
     return false;
   });
 
+
+  /**
+   * Subscribe to any form submission
+
+   * data = { message: ..., user: { name: ..., email: ... } }
+   */
+
   chat.on('formSubmission', function(data) {
+
+    /**
+     * data.message will === false if it doesnt exist
+     * As will data.user.name & data.user.email (includes validation)
+     */
+
     if(data.message)
+
+      /**
+       * Append the message to the widget
+       */
+
       chat.addMessage({
         from: 'Me',
         content: data.message,
@@ -72,3 +90,17 @@ chatta().init(function(chat) {
   });
 });
 ```
+
+## API 
+
+| Method            | Params                                                                                                             | Returns                                                        | Callback args | Description                                                              |
+|-------------------|--------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|---------------|--------------------------------------------------------------------------|
+| `addMessage`      | <Object> {   from: String,   content: String,   date: Date,   isRight: Boolean (align the message right or left) } | <Boolean> Error                                                | n/a           | Append a message to the chat window                                      |
+| `display`         | n/a                                                                                                                | this                                                           | n/a           | Shows (`display:block`) the widget                                       |
+| `hide`            | n/a                                                                                                                | this                                                           | n/a           | Hides (`display:none`) the widget                                        |
+| `setErrors`       | <String>, <Boolean>, <Boolean>  - Message string  - Has name error?  - Has email error?                            | this                                                           | n/a           | Adds the error footer with message and red borders to appropriate fields |
+| `resetErrorState` | n/a                                                                                                                | this                                                           | n/a           | Resets and hides all error highlights                                    |
+| `toggleBox`       | <Function> callback                                                                                                | this                                                           | none          | Animates the widget up/down                                              |
+| `getUser`         | n/a                                                                                                                | <Object> {   name: String||Boolean,   email: String||Boolean } | n/a           | Get the user                                                             |
+| `setUser`         | <Object> {   name: String,   email: String }                                                                       |                                                                |               |                                                                          |
+|                   |                                                                                                                    |                                                                |               |                                                                          |

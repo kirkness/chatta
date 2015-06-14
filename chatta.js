@@ -483,6 +483,8 @@
     $chattaUserDetails.addStyles({
       'display':'block'
     });
+
+    return this;
   };
 
   // Show the widget
