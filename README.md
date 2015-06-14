@@ -14,7 +14,7 @@ I wanted a simple chat widget to allow me to build into my own system and integr
 
 ``` js
 // Start by initialising the widget
-chatta().init(function(chat) {
+chatta.init(function(chat) {
 
 
   /**
@@ -91,16 +91,16 @@ chatta().init(function(chat) {
 });
 ```
 
-## API 
-
-| Method            | Params                                                                                                             | Returns                                                        | Callback args | Description                                                              |
-|-------------------|--------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------|---------------|--------------------------------------------------------------------------|
-| `addMessage`      | <Object> {   from: String,   content: String,   date: Date,   isRight: Boolean (align the message right or left) } | <Boolean> Error                                                | n/a           | Append a message to the chat window                                      |
-| `display`         | n/a                                                                                                                | this                                                           | n/a           | Shows (`display:block`) the widget                                       |
-| `hide`            | n/a                                                                                                                | this                                                           | n/a           | Hides (`display:none`) the widget                                        |
-| `setErrors`       | <String>, <Boolean>, <Boolean>  - Message string  - Has name error?  - Has email error?                            | this                                                           | n/a           | Adds the error footer with message and red borders to appropriate fields |
-| `resetErrorState` | n/a                                                                                                                | this                                                           | n/a           | Resets and hides all error highlights                                    |
-| `toggleBox`       | <Function> callback                                                                                                | this                                                           | none          | Animates the widget up/down                                              |
-| `getUser`         | n/a                                                                                                                | <Object> {   name: String||Boolean,   email: String||Boolean } | n/a           | Get the user                                                             |
-| `setUser`         | <Object> {   name: String,   email: String }                                                                       |                                                                |               |                                                                          |
-|                   |                                                                                                                    |                                                                |               |                                                                          |
+## API
+| Method            | Params                                                                                                               | Returns                                                          | Callback args | Description                                                                    |
+|-------------------|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|---------------|--------------------------------------------------------------------------------|
+| `init`            | `Function` (callback)                                                                                                | `this`                                                           | none          |                                                                                |
+| `addMessage`      | `Object` `{   from: String,   content: String,   date: Date,   isRight: Boolean (align the message right or left) }` | `Boolean` Error                                                  | n/a           | Append a message to the chat window                                            |
+| `display`         | n/a                                                                                                                  | `this`                                                           | n/a           | Shows (`display:block`) the widget                                             |
+| `hide`            | n/a                                                                                                                  | `this`                                                           | n/a           | Hides (`display:none`) the widget                                              |
+| `setErrors`       | `String`, `Boolean`, `Boolean`  - Message string  - Has name error?  - Has email error?                              | `this`                                                           | n/a           | Adds the error footer with message and red borders to appropriate fields       |
+| `resetErrorState` | n/a                                                                                                                  | `this`                                                           | n/a           | Resets and hides all error highlights                                          |
+| `toggleBox`       | `Function` callback                                                                                                  | `this`                                                           | none          | Animates the widget up/down                                                    |
+| `getUser`         | n/a                                                                                                                  | `Object` `{   name: String||Boolean,   email: String||Boolean }` | n/a           | Get the user                                                                   |
+| `setUser`         | `Object` `{   name: String,   email: String }`                                                                       | `Boolean`                                                        | n/a           | Set user, adds footer to widget with name and email. Returns if user is valid. |
+| `showTab`         | `Boolean` (Should animate), `Function`(callback)                                                                     | `this`                                                           | none          | Sets widget to only show tab. i.e. hides the chat widget.                      |

@@ -423,17 +423,19 @@
   };
 
   // Slide up or down
-  $chatta.toggleBox = function() {
+  $chatta.toggleBox = function(callback) {
     var _this = this;
     if(_this._isUp) {
       this.showTab(true, function() {
         $chattaTabArrow.setText(upArrow);
         _this._isUp = false;
+        (callback||noop)();
       });
     } else {
       _this._e.animateY(0, function() {
         _this._isUp = true;
         $chattaTabArrow.setText(downArrow);
+        (callback||noop)();
       });
     }
     return _this;
@@ -454,6 +456,8 @@
     $chattaNameField.addStyles({
       'border':'1px solid #eee'
     });
+
+    return this;
   };
 
   // Set error highlighting
@@ -567,4 +571,4 @@
   };
 
   return $chatta;
-});
+})();
