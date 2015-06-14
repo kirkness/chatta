@@ -1,0 +1,30 @@
+{
+  "name": "chatta",
+  "version": "0.1.0",
+  "description": "A zero-dependency chat widget. Ideal for customer support with Slack.",
+  "main": "index.js",
+  "scripts": {
+    "test": "-"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kirkness/chatta.git"
+  },
+  "keywords": [
+    "chat",
+    "customer",
+    "support",
+    "website",
+    "widget"
+  ],
+  "author": "Henry Kirkness",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kirkness/chatta/issues"
+  },
+  "homepage": "https://github.com/kirkness/chatta",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.9.1"
+  }
+}

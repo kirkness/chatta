@@ -1,2 +1,74 @@
-# chatta
-Website chat widget
+
+# Chatta
+
+In short, its similar to the widget that olark and alike provide, just without all the backend and frontend logic.
+
+I wanted a simple chat widget to allow me to build into my own system and integrate with Slack, and this is the result. It has zero dependencies, no extra css files; just a single file and api, written in pure JavaScript.
+
+## The Widget
+
+![Website Chat Widget (Chatta)](https://github.com/kirkness/chatta/blob/master/example.gif)
+
+
+## Simple Example
+
+``` js
+// Start by initialising the widget
+chatta().init(function(chat) {
+
+
+  /**
+   * Add an event handler for the forms initial submission.
+   * The initial will (if you choose) submit
+   * will provide the message and user data from the form.
+
+   * i.e. data = { message: ..., user: { name: ..., email: ... } }
+   */
+
+  chat.on('initialFormSubmission', function(data) {
+
+    /**
+     * Setting the user will add a bar to the foot of the widget.
+     * The bar just tells the user that they are chatting as <name>, <email>
+     */
+
+    var success = chat.setUser(data.user);
+
+    /**
+     * If the user model is valid hide the user fields
+     */
+
+    if(success) {
+      chat.hideUserFields(true);
+
+      /**
+       * Return true allowing the following form submission to be called
+       */
+
+      return true;
+    }
+
+    /**
+     * There are errors so pass 'message', nameErr<Boolean>, email<Boolean>
+     */
+
+    chat.setErrors('Form errorsssss!', (data.user.name === false) ? true : false, (data.user.email === false) ? true : false);
+
+    /**
+     * Return false to prevent firing 'formSubmission'
+     */
+
+    return false;
+  });
+
+  chat.on('formSubmission', function(data) {
+    if(data.message)
+      chat.addMessage({
+        from: 'Me',
+        content: data.message,
+        date: new Date(),
+        isRight: true
+      });
+  });
+});
+```
