@@ -4,6 +4,45 @@
   var _dom = [];
   var upArrow = '&#9650;';
   var downArrow = '&#9660;';
+  var widgetWidth = config&&config.widgetWidth||300;
+  var screenWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+  var marginFromRight = config&&config.marginFromRight||50;
+
+  if((widgetWidth+(marginFromRight*2))>screenWidth) {
+    marginFromRight = 20;
+    widgetWidth = screenWidth-(marginFromRight*2);
+  }
+
+  // --------------------------------------------------
+  // -- Request animation frame shim
+  // --------------------------------------------------
+
+  (function() {
+    var lastTime = 0;
+    var vendors = ['webkit', 'moz'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame =
+          window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame) {
+      window.requestAnimationFrame = function(callback, element) {
+        var currTime = new Date().getTime();
+        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+        var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+          timeToCall);
+        lastTime = currTime + timeToCall;
+        return id;
+      };
+    }
+
+    if (!window.cancelAnimationFrame) {
+      window.cancelAnimationFrame = function(id) {
+        clearTimeout(id);
+      };
+    }
+  }());
 
   // --------------------------------------------------
   // -- Basic date formatting
@@ -72,21 +111,27 @@
 
   // Vertical animation
   Element.prototype.animateY = function(y, cb) {
-    var top = parseInt(css(this._elm, 'bottom'), 10),
+    var top = parseInt(this.css('bottom'), 10),
         dy = top - y, i = 1, count = 20, _this = this;
 
     function frame() {
       if ( i >= count ) { return (cb||noop)(); }
       i += 1;
       _this._elm.style.bottom = (top - (dy * i / count)).toFixed(0) + 'px';
-      setTimeout( frame, 5 );
-    } frame();
-
-    function css(element, property) {
-      return window.getComputedStyle( element, null ).getPropertyValue( property );
+      window.requestAnimationFrame(frame);
     }
+
+    frame();
   };
 
+  // GEt computed css from element
+  Element.prototype.css = function(property) {
+    return window.getComputedStyle( this._elm, null )
+      .getPropertyValue( property );
+  }
+
+
+  // Gets value from field
   Element.prototype.val = function(text) {
     if(typeof text !== 'undefined')
       this._elm.value = text;
@@ -179,6 +224,7 @@
   // Create elements
   var $chattaWrap       = new Element('div', 'chatta_wrap');
   var $chattaTab        = new Element('div', 'chatta_tab');
+  var $chattaTabText    = new Element('span', 'chatta_tab_text');
   var $chattaTabArrow   = new Element('span', 'chatta_tab_arrow');
   var $chattaBox        = new Element('div', 'chatta_box');
   var $chattaFormWrap   = new Element('div', 'chatta_form_wrap');
@@ -188,10 +234,11 @@
   var $chattaMessageBox = new Element('textarea', 'chatta_message_box');
   var $chattaSubmit     = new Element('input', 'chatta_submit');
   var $chattaUserDetails= new Element('div', 'chatta_user_details');
+  var $chattaLight      = new Element('span', 'chatta_light');
 
   // Set attributes if needed
   $chattaTabArrow.setText(upArrow);
-  $chattaTab.setText(config&&config.label||'Chat to the team!');
+  $chattaTabText.setText(config&&config.label||'Chat to the team!');
   $chattaEmailField.attr('type', 'text');
   $chattaEmailField.attr('placeholder', 'Your email');
   $chattaNameField.attr('type', 'text');
@@ -202,11 +249,11 @@
 
   // Add styles
   $chattaWrap.addStyles({
-    'width':'400px',
+    'width':widgetWidth + 'px',
     'background':'#fff',
     'position':'fixed',
     'bottom':'-500px',
-    'right':'50px',
+    'right':marginFromRight+'px',
     'z-index':'9999',
     '-webkit-border-top-left-radius':'3px',
     '-webkit-border-top-right-radius':'3px',
@@ -227,6 +274,16 @@
     'color':'#fff'
   });
 
+  $chattaLight.addStyles({
+    'background':'#36c498',
+    'margin-right':'10px',
+    'width':'10px',
+    'height':'10px',
+    'display':'inline-block',
+    'border-radius':'25px',
+    'margin-top':'5px'
+  });
+
   $chattaTabArrow.addStyles({
     'color':'#fff',
     'float':'right'
@@ -240,7 +297,7 @@
   });
 
   $chattaFormWrap.addStyles({
-    'width':'400px',
+    'width': widgetWidth + 'px',
     'padding':'10px',
     'bottom':'0px',
     'background':'#fff',
@@ -248,7 +305,7 @@
   });
 
   var chattaInputStyle = {
-    'width':'380px',
+    'width':(widgetWidth-20)+'px',
     'border':'1px solid #eee',
     'background':'#eee',
     'box-shadow':'none',
@@ -267,7 +324,7 @@
   $chattaMessageBox.addStyles(chattaInputStyle);
 
   $chattaSubmit.addStyles({
-    'width':'380px',
+    'width':(widgetWidth-20)+'px',
     'border':'none',
     '-webkit-border-radius':'3px',
     '-webkit-border-radius':'3px',
@@ -277,6 +334,7 @@
     'border-radius':'3px',
     'margin-bottom':'7px',
     'background-color':'#3b80c1',
+    'padding':'7px 0px',
     'color':'#fff',
     'top':'0px'
   });
@@ -291,6 +349,8 @@
   });
 
   // Create tree
+  $chattaTab.append($chattaLight);
+  $chattaTab.append($chattaTabText);
   $chattaTab.append($chattaTabArrow);
   $chattaWrap.append($chattaTab);
   $chattaWrap.append($chattaBox);
@@ -341,6 +401,7 @@
 
     // Form sumitted
     function formSubmit(e) {
+      if(this.connectionError) return;
       _this.resetErrorState();
       var formData = _this._getFormData();
       var success = true;
@@ -351,9 +412,6 @@
 
       // On every form submission callback
       if(success) _this._events.formSubmission(formData);
-
-      // Clear the textarea
-      $chattaMessageBox.val('');
 
       // Prevent form submission
       e.preventDefault();
@@ -381,6 +439,7 @@
   $chatta._getFormData = function() {
     var data = {};
     data.message = $chattaMessageBox.val();
+    data.message = data.message.replace(/(?:\r\n|\r|\n)/g, '');
     data.user = {
       name: $chattaNameField.val(),
       email: $chattaEmailField.isValidEmail()&&$chattaEmailField.val()
@@ -420,6 +479,11 @@
   // Returns user
   $chatta.getUser = function() {
     return this._user;
+  };
+
+  // Clear the textarea
+  $chatta.clearMessageBox = function() {
+    $chattaMessageBox.val('');
   };
 
   // Slide up or down
@@ -528,10 +592,10 @@
   // Hide/show the user fields
   $chatta.hideUserFields = function(hide) {
     $chattaEmailField.addStyles({
-      'display':(hide)?'none':'block'
+      'display':(hide) ? 'none':'block'
     });
     $chattaNameField.addStyles({
-      'display':(hide)?'none':'block'
+      'display':(hide) ? 'none':'block'
     });
   };
 
@@ -540,6 +604,46 @@
     this._events[event] = callback;
   };
 
+  // Add ui changes if connection is lost
+  $chatta.setConnectionError = function(on) {
+    if(on) {
+      this.connectionError = true;
+      $chattaSubmit.attr('value', 'Network error!');
+      $chattaSubmit.addStyles({
+        'background':'#cd5a54',
+        'opacity':'0.7'
+      });
+      $chattaSubmit.getElement().disabled = true;
+    } else {
+      $chattaSubmit.attr('value', 'Send');
+      this.connectionError = false;
+      $chattaSubmit.addStyles({
+        'background':'#3b80c1',
+        'opacity':'1'
+      });
+      $chattaSubmit.getElement().disabled = false;
+    }
+  };
+
+  // PRIVATE: count matching elms in array
+  $chatta._countOccuranceOf = function(array, condition) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+      count=condition(array[i]) ? count+1 : count;
+    }
+    return count;
+  };
+
+  // Returns total amount of messages
+  $chatta.getTotalMessages = function(isRight) {
+    if(typeof isRight === 'undefined')
+      return this._messages.length;
+
+    return this._countOccuranceOf(this._messages,
+      function(item) {
+        return isRight&&item.isRight||!item.isRight;
+      });
+  };
 
   // Add message element to widget
   $chatta.addMessage = function(message) {
@@ -571,4 +675,4 @@
   };
 
   return $chatta;
-})();
+});
