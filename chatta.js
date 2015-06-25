@@ -1,4 +1,18 @@
-;window.chatta = (function(config) {
+
+/**
+ * config:
+ ** label: String (Visible tab; defaults 'Chat to the team!')
+ ** widgetWidth: Number (width of chat window - defaults 300(px))
+ ** marginFromRight: Number (pixels from right of screen - defaults 50(px))
+ ** btnColor: String (css color, defaults - '#3b80c1')
+ ** tabColor: String (css color default - '#cd5a54')
+ ** chattaActiveColor: String (css color defaults -'#36c498')
+ ** userDetailsFooterColor: String (css defaults to '#36c498')
+ ** errorColor: String (css defaults to '#cd5a54')
+ */
+
+
+window.chatta = (function(config) {
 
   var noop = function() {};
   var _dom = [];
@@ -270,12 +284,12 @@
 
   $chattaTab.addStyles({
     'padding':'10px 20px',
-    'background':'#cd5a54',
+    'background':config.tabColor||'#cd5a54',
     'color':'#fff'
   });
 
   $chattaLight.addStyles({
-    'background':'#36c498',
+    'background':config.chattaActiveColor||'#36c498',
     'margin-right':'10px',
     'width':'10px',
     'height':'10px',
@@ -333,7 +347,7 @@
     'border-radius':'3px',
     'border-radius':'3px',
     'margin-bottom':'7px',
-    'background-color':'#3b80c1',
+    'background-color':config.btnColor||'#3b80c1',
     'padding':'7px 0px',
     'color':'#fff',
     'top':'0px'
@@ -341,7 +355,7 @@
 
   $chattaUserDetails.addStyles({
     'text-align':'center',
-    'background':'#36c498',
+    'background':config.userDetailsFooterColor||'#36c498',
     'color':'#fff',
     'padding':'4px',
     'font-size':'11px',
@@ -381,7 +395,11 @@
       opened: noop,
       closed: noop,
       formSubmission: noop,
-      initialFormSubmission: noop
+      initialFormSubmission: noop,
+      mssgKeyup: noop,
+      emailKeyup: noop,
+      nameKeyup: noop,
+      anySubmission: noop
     };
 
     // Array of widget messages
@@ -401,8 +419,10 @@
 
     // Form sumitted
     function formSubmit(e) {
+      _this._events.anySubmission(e);
       if(this.connectionError) return;
       _this.resetErrorState();
+
       var formData = _this._getFormData();
       var success = true;
 
@@ -419,8 +439,11 @@
 
     // Call submit on submit event and 'enter'
     $chattaForm.on('submit', formSubmit);
+    $chattaEmailField.on('keyup', this._events.emailKeyup);
+    $chattaNameField.on('keyup', this._events.nameKeyup);
     $chattaMessageBox.on('keyup', function(e) {
       e = e || event;
+      this._events.mssgKeyup(e);
       if (e.keyCode === 13 && !e.ctrlKey)
         return formSubmit(e);
       return true;
@@ -507,9 +530,9 @@
 
   // Reset the error formetting
   $chatta.resetErrorState = function() {
-    // Set error mssg background color/hide
+    // Reset error mssg background color/hide
     $chattaUserDetails.addStyles({
-      'background':'#36c498',
+      'background':config.userDetailsFooterColor||'#36c498',
       'display':'none'
     });
 
@@ -529,7 +552,7 @@
 
     // Set error mssg background color
     $chattaUserDetails.addStyles({
-      'background':'#cd5a54'
+      'background':config.errorColor||'#cd5a54'
     });
 
     // Set message text
@@ -538,13 +561,13 @@
     // If name error set red border
     if(nameErr)
       $chattaNameField.addStyles({
-        'border':'1px solid #cd5a54'
+        'border':'1px solid ' + (config.errorColor||'#cd5a54')
       });
 
     // If email error set red border
     if(emailErr)
       $chattaEmailField.addStyles({
-        'border':'1px solid #cd5a54'
+        'border':'1px solid ' + (config.errorColor||'#cd5a54')
       });
 
     // Show the user error box
@@ -605,12 +628,12 @@
   };
 
   // Add ui changes if connection is lost
-  $chatta.setConnectionError = function(on) {
+  $chatta.setFormError = function(on, message) {
     if(on) {
       this.connectionError = true;
-      $chattaSubmit.attr('value', 'Network error!');
+      $chattaSubmit.attr('value', message||'Error!');
       $chattaSubmit.addStyles({
-        'background':'#cd5a54',
+        'background':config.errorColor||'#cd5a54',
         'opacity':'0.7'
       });
       $chattaSubmit.getElement().disabled = true;
@@ -618,7 +641,7 @@
       $chattaSubmit.attr('value', 'Send');
       this.connectionError = false;
       $chattaSubmit.addStyles({
-        'background':'#3b80c1',
+        'background':config.btnColor||'#3b80c1',
         'opacity':'1'
       });
       $chattaSubmit.getElement().disabled = false;

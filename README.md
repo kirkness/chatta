@@ -37,8 +37,12 @@ chatta.init(function(chat) {
 ## Simple Example (as seen in the gif above)
 
 ``` js
+
+// Optional config object
+var config = { label: 'Live chat!' };
+
 // Start by initialising the widget
-chatta.init(function(chat) {
+chatta(config).init(function(chat) {
 
 
   /**
@@ -115,6 +119,34 @@ chatta.init(function(chat) {
 });
 ```
 
+## Config
+
+Optional config object passed in `chatta(config)`.
+
+ - config:
+    - label: String (Visible tab; defaults 'Chat to the team!')
+    - widgetWidth: Number (width of chat window - defaults 300(px))
+    - marginFromRight: Number (pixels from right of screen - defaults 50(px))
+    - btnColor: String (css color, defaults - '#3b80c1')
+    - tabColor: String (css color default - '#cd5a54')
+    - chattaActiveColor: String (css color defaults -'#36c498')
+    - userDetailsFooterColor: String (css defaults to '#36c498')
+    - errorColor: String (css defaults to '#cd5a54')
+
+## Events
+
+Subscribe to widget events using `chat.on(event)`.
+
+ - `opened` - Called when widget opens
+ - `closed` - Called when widget closes
+ - `formSubmission` - Called when form is successfully submitted
+ - `initialFormSubmission` - Called on initial successfull submission
+ - `mssgKeyup` - Called on keyup of message box input
+ - `emailKeyup` - Called on keyup of email field input
+ - `nameKeyup` - Called on name input keyup
+ - `anySubmission` - Called whenever the form is submitted
+
+
 ## API
 | Method            | Params                                                                                                               | Returns                                                          | Callback args | Description                                                                    |
 |-------------------|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|---------------|--------------------------------------------------------------------------------|
@@ -128,3 +160,4 @@ chatta.init(function(chat) {
 | `getUser`         | n/a                                                                                                                  | `Object` `{   name: String||Boolean,   email: String||Boolean }` | n/a           | Get the user                                                                   |
 | `setUser`         | `Object` `{   name: String,   email: String }`                                                                       | `Boolean`                                                        | n/a           | Set user, adds footer to widget with name and email. Returns if user is valid. |
 | `showTab`         | `Boolean` (Should animate), `Function`(callback)                                                                     | `this`                                                           | none          | Sets widget to only show tab. i.e. hides the chat widget.                      |
+| `setFormError`    | `Boolean` (toggle error on/off), String (message to display on button)                                               | `this`                                                           | none          | Toggle form error on/off (stops form from being able to submit - handy for connection loss) |
