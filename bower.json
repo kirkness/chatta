@@ -1,7 +1,7 @@
 {
   "name": "chatta",
   "main": "chatta.min.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/kirkness/chatta",
   "description": "A zero-dependency chat widget. Ideal for customer support with Slack.",
   "keywords": [
